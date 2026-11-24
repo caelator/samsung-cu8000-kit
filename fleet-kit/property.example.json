@@ -1,0 +1,19 @@
+{
+  "property_name": "Villa 01 - Main Lounge",
+  "room_title": "VILLA 01",
+  "tv_ip": "",
+  "card_preset": "generic",
+  "hdmi1_name": "HDMI 1",
+  "hdmi1_port": "HDMI 1",
+  "hdmi1_source_type": 13,
+  "plex_host": "",
+  "plex_port": 32400,
+  "gateway_url": "",
+  "media_os_enabled": false,
+  "enable_onboot_hook": true,
+  "enable_bloat_strip": true,
+  "enable_hub_ui": true,
+  "enable_vpn": true,
+  "vpn_default_location": "54",
+  "vpn_bypass_rfc1918": true
+}

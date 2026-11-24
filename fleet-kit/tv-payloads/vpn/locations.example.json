@@ -1,0 +1,18 @@
+{
+  "note": "Populate with your own authenticated ExpressVPN Lightway location endpoints.",
+  "default_selected_location_id": "54",
+  "configured_locations": {
+    "54": {
+      "location": {"id": "54", "name": "USA - Miami", "country_code": "US"},
+      "clear_udp": [
+        {"ip": "198.51.100.10", "port": 15474, "cert_dn": "Server-EXAMPLE-1", "mtu": 1500, "transport": "udp"}
+      ]
+    },
+    "202": {
+      "location": {"id": "202", "name": "USA - Miami - 2", "country_code": "US"},
+      "clear_udp": [
+        {"ip": "203.0.113.20", "port": 10716, "cert_dn": "Server-EXAMPLE-2", "mtu": 1500, "transport": "udp"}
+      ]
+    }
+  }
+}

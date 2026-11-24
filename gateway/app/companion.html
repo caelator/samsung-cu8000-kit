@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Living Room</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #07090f;
+    --bg-elev: #0f131d;
+    --surface: rgba(255, 255, 255, 0.045);
+    --surface-hover: rgba(255, 255, 255, 0.09);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-hi: rgba(255, 255, 255, 0.18);
+    --ink: #f5f7fc;
+    --ink-2: #a5b0c7;
+    --ink-3: #64708a;
+    --plex: #f5a623;
+    --yt: #ff3b4a;
+    --accent: #e5e9f5;
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --radius: 16px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background: radial-gradient(1200px 600px at 18% -10%, rgba(245,166,35,0.09), transparent 60%),
+                radial-gradient(1000px 550px at 85% -15%, rgba(255,59,74,0.08), transparent 58%),
+                var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Top Glass Navigation ── */
+  header {
+    position: sticky; top: 0; z-index: 40;
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    background: rgba(7, 9, 15, 0.78);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1380px; margin: 0 auto; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.02em;
+    cursor: pointer; user-select: none;
+  }
+  .brand-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--plex), var(--yt));
+    box-shadow: 0 0 12px rgba(245, 166, 35, 0.55);
+  }
+  .tabs {
+    display: flex; gap: 4px; background: rgba(255,255,255,0.04); padding: 4px;
+    border-radius: 999px; border: 1px solid var(--line); overflow-x: auto; max-width: 100%;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    border: 0; background: transparent; color: var(--ink-2); font-size: 13.5px; font-weight: 600;
+    padding: 7px 15px; border-radius: 999px; cursor: pointer; white-space: nowrap;
+    transition: background 180ms var(--ease), color 180ms var(--ease);
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { background: var(--ink); color: #090c14; }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    height: 36px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+    transition: all 180ms var(--ease);
+  }
+  .icon-btn:hover { background: var(--surface-hover); color: var(--ink); border-color: var(--line-hi); }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); }
+  .status-dot.ok { background: var(--ok); box-shadow: 0 0 8px rgba(52,211,153,0.6); }
+
+  /* ── Main Canvas ── */
+  main { max-width: 1380px; margin: 0 auto; padding: 24px 20px 64px; }
+  .section { margin-bottom: 34px; }
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px;
+  }
+  .section-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .section-sub { font-size: 13px; color: var(--ink-3); }
+
+  /* ── Horizontal Carousels & Grids ── */
+  .rail {
+    display: flex; gap: 16px; overflow-x: auto; padding: 4px 2px 14px;
+    scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.16) transparent;
+  }
+  .grid-poster {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 18px;
+  }
+  .grid-wide {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 18px;
+  }
+
+  /* ── Media Cards ── */
+  .card {
+    flex: 0 0 auto; cursor: pointer; position: relative; scroll-snap-align: start;
+    transition: transform 220ms var(--ease);
+  }
+  .card:hover { transform: translateY(-4px); }
+  .card.poster { width: 164px; }
+  .grid-poster .card.poster { width: 100%; }
+  .card.wide { width: 288px; }
+  .grid-wide .card.wide { width: 100%; }
+
+  .art-box {
+    position: relative; width: 100%; border-radius: 13px; overflow: hidden;
+    background: linear-gradient(155deg, #161c2c, #0d111b);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.38);
+    transition: border-color 180ms var(--ease), box-shadow 220ms var(--ease);
+  }
+  .card:hover .art-box { border-color: rgba(255,255,255,0.28); box-shadow: 0 16px 34px rgba(0,0,0,0.52); }
+  .card.poster .art-box { aspect-ratio: 2 / 3; }
+  .card.wide .art-box { aspect-ratio: 16 / 9; }
+  .art-box img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 260ms ease; }
+  .art-box img.loaded { opacity: 1; }
+  .art-fallback {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 16px; text-align: center; font-weight: 700; font-size: 14px; color: var(--ink-3);
+  }
+
+  .src-chip {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 6px; backdrop-filter: blur(10px);
+  }
+  .src-plex { background: rgba(15, 12, 6, 0.72); color: var(--plex); border: 1px solid rgba(245,166,35,0.35); }
+  .src-yt   { background: rgba(22, 6, 9, 0.76); color: #ff6b77; border: 1px solid rgba(255,59,74,0.38); }
+  .src-seerr { background: rgba(9, 17, 32, 0.78); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.35); }
+
+  .dur-chip {
+    position: absolute; right: 8px; bottom: 8px;
+    font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+    background: rgba(6, 8, 13, 0.82); color: var(--ink); backdrop-filter: blur(8px);
+  }
+  .prog-track {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,0.18);
+  }
+  .prog-fill { height: 100%; background: var(--plex); }
+  .src-is-yt .prog-fill { background: var(--yt); }
+
+  .card-meta { padding: 9px 2px 0; }
+  .card-title {
+    font-size: 14px; font-weight: 650; line-height: 1.28; color: var(--ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-sub {
+    margin-top: 3px; font-size: 12.5px; color: var(--ink-2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ── Request Action Footer on Jellyseerr Cards ── */
+  .card-act { margin-top: 8px; }
+  .btn-req {
+    width: 100%; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08);
+    color: var(--ink); border-radius: 9px; padding: 7px 10px; font-size: 12.5px; font-weight: 650;
+    cursor: pointer; transition: all 160ms var(--ease);
+  }
+  .btn-req:hover { background: var(--ink); color: #080b12; border-color: var(--ink); }
+  .btn-req.done, .btn-req:disabled {
+    cursor: default; background: rgba(52, 211, 153, 0.14); color: var(--ok);
+    border-color: rgba(52, 211, 153, 0.34);
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; justify-content: center; width: 100%;
+    border-radius: 9px; padding: 7px 10px; font-size: 12px; font-weight: 650; text-transform: capitalize;
+    background: rgba(255,255,255,0.05); color: var(--ink-2); border: 1px solid var(--line);
+  }
+  .status-pill.available { background: rgba(52,211,153,0.12); color: var(--ok); border-color: rgba(52,211,153,0.3); }
+  .status-pill.processing, .status-pill.pending { background: rgba(251,191,36,0.12); color: var(--warn); border-color: rgba(251,191,36,0.28); }
+
+  /* ── Search Bar & Sub-Filters ── */
+  .search-wrap {
+    max-width: 720px; margin: 4px auto 28px; position: relative;
+  }
+  .search-input {
+    width: 100%; padding: 15px 48px 15px 20px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--line-hi);
+    color: var(--ink); font-size: 16px; outline: none; transition: all 180ms var(--ease);
+  }
+  .search-input:focus { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.36); box-shadow: 0 0 0 4px rgba(255,255,255,0.06); }
+  .search-clear {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.12);
+    color: var(--ink); font-size: 15px; cursor: pointer; display: none;
+  }
+  .search-clear.show { display: inline-flex; align-items: center; justify-content: center; }
+
+  .subtabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .pill-btn {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 160ms var(--ease);
+  }
+  .pill-btn:hover { color: var(--ink); border-color: var(--line-hi); }
+  .pill-btn.active { background: rgba(255,255,255,0.15); color: var(--ink); border-color: rgba(255,255,255,0.3); }
+
+  /* ── Modals (Detail Sheet & Settings Drawer) ── */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 90; background: rgba(4, 6, 11, 0.78);
+    backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .backdrop.open { display: flex; }
+  .modal {
+    width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto;
+    background: #0d111b; border: 1px solid var(--line-hi); border-radius: 22px;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.7); position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; z-index: 5;
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(8,11,18,0.75); color: var(--ink); font-size: 18px; cursor: pointer;
+  }
+  .hero-banner {
+    position: relative; height: 240px; background: #101522; overflow: hidden;
+  }
+  .hero-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.65; }
+  .hero-grad {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(13,17,27,0.15) 0%, rgba(13,17,27,0.98) 100%);
+  }
+  .modal-body { padding: 0 24px 24px; margin-top: -54px; position: relative; z-index: 2; }
+  .modal-title { font-size: 26px; font-weight: 750; letter-spacing: -0.025em; margin: 0 0 8px; }
+  .tech-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tech-chip {
+    font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 8px;
+    background: rgba(255,255,255,0.07); color: var(--ink-2); border: 1px solid var(--line);
+  }
+  .tech-chip.ok { color: var(--ok); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.1); }
+  .summary { color: var(--ink-2); font-size: 14.5px; line-height: 1.55; margin: 0 0 18px; }
+  .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .btn-primary {
+    border: 0; background: var(--ink); color: #07090f; padding: 11px 22px; border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: transform 140ms var(--ease);
+  }
+  .btn-primary:hover { transform: scale(1.02); }
+  .btn-secondary {
+    border: 1px solid var(--line-hi); background: var(--surface); color: var(--ink);
+    padding: 11px 18px; border-radius: 12px; font-size: 14px; font-weight: 650; cursor: pointer;
+  }
+  .btn-danger {
+    border: 1px solid rgba(255,59,74,0.35); background: rgba(255,59,74,0.12); color: #ff8590;
+    padding: 10px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 650; cursor: pointer;
+  }
+  .ep-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .ep-row {
+    display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line); cursor: pointer;
+  }
+  .ep-row:hover { background: var(--surface-hover); }
+  .ep-thumb { width: 112px; aspect-ratio: 16/9; border-radius: 8px; object-fit: cover; background: #141926; flex-shrink: 0; }
+  .code-box {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 32px; font-weight: 700;
+    letter-spacing: 4px; color: var(--plex); margin: 12px 0;
+  }
+  .empty {
+    padding: 36px 20px; text-align: center; color: var(--ink-3); font-size: 14px;
+    background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius);
+  }
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #141a29; color: var(--ink); border: 1px solid var(--line-hi);
+    padding: 10px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55); opacity: 0; pointer-events: none;
+    transition: all 220ms var(--ease); z-index: 120;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  video.preview-player { width: 100%; border-radius: 14px; background: #000; margin-top: 12px; max-height: 360px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <div class="brand" onclick="setTab('home')"><span class="brand-dot"></span>Living Room</div>
+    <nav class="tabs" id="mainTabs">
+      <button class="tab active" data-tab="home" onclick="setTab('home')">Home</button>
+      <button class="tab" data-tab="movies" onclick="setTab('movies')">Movies</button>
+      <button class="tab" data-tab="tv" onclick="setTab('tv')">TV Shows</button>
+      <button class="tab" data-tab="youtube" onclick="setTab('youtube')">YouTube</button>
+      <button class="tab" data-tab="kids" onclick="setTab('kids')">Kids</button>
+      <button class="tab" data-tab="search" onclick="setTab('search')">Search</button>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" onclick="openSettings()">
+        <span class="status-dot" id="hdrDot"></span>
+        <span id="hdrLabel">System</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<!-- Detail / Preview Modal -->
+<div class="backdrop" id="detailBackdrop" onclick="if(event.target===this)closeDetail()">
+  <div class="modal" id="detailModal"></div>
+</div>
+
+<!-- Settings / Account Modal -->
+<div class="backdrop" id="settingsBackdrop" onclick="if(event.target===this)closeSettings()">
+  <div class="modal" style="max-width:540px; padding:24px;" id="settingsModal"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const S = {
+  tab: 'home',
+  ytSubTab: 'channels',
+  ytCategory: 'active',
+  ytChanFilter: '',
+  activeChannel: null,
+  sort: 'addedAt:desc',
+  unwatched: false,
+  health: null,
+  searchQuery: '',
+  searchTimer: null,
+  authPollTimer: null,
+  gridStart: 0,
+  gridItems: [],
+  gridTotal: 0,
+};
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function webp(url) {
+  if (!url) return '';
+  return url + (url.includes('?') ? '&' : '?') + 'fmt=webp';
+}
+function fmtDur(ms) {
+  if (!ms || ms <= 0) return '';
+  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}` : `${m}:${String(sec).padStart(2,'0')}`;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('show'), 2600);
+}
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  return r.json();
+}
+
+function renderCard(item, shape = 'poster') {
+  const isYt = item.source === 'youtube';
+  const isCh = item.source === 'yt_channel';
+  const isSeerr = item.source === 'jellyseerr';
+  const imgUrl = webp(shape === 'wide' ? (item.thumb_astc || item.art_astc || item.poster_astc) : (item.poster_astc || item.art_astc || item.thumb_astc));
+  const chipCls = isCh ? (item.is_kids ? 'src-seerr' : 'src-yt') : (isYt ? 'src-yt' : (isSeerr ? 'src-seerr' : 'src-plex'));
+  const chipTxt = isCh ? (item.is_kids ? 'Kids YT' : 'Channel') : (isYt ? 'YouTube' : (isSeerr ? (item.media_type === 'tv' ? 'TV' : 'Movie') : 'Plex'));
+  const dur = (isYt || shape === 'wide') && item.duration_ms ? `<span class="dur-chip">${fmtDur(item.duration_ms)}</span>` : '';
+  const prog = item.progress > 0.01 ? `<div class="prog-track"><div class="prog-fill" style="width:${Math.round(item.progress*100)}%"></div></div>` : '';
+
+  let footer = '';
+  if (isSeerr) {
+    if (item.can_request) {
+      footer = `<div class="card-act"><button class="btn-req" onclick="event.stopPropagation(); requestSeerr('${item.media_type}', ${item.tmdb_id}, this)">+ Request</button></div>`;
+    } else {
+      const label = (item.status || '').replace(/_/g, ' ');
+      footer = `<div class="card-act"><span class="status-pill ${esc(item.status)}">${esc(label)}</span></div>`;
+    }
+  } else if (isCh) {
+    const cid = esc(item.channel_id || item.id);
+    const nextAud = item.is_kids ? 'adults' : 'kids';
+    const audLbl = item.is_kids ? '→ Adults' : '→ Kids';
+    const favLbl = item.is_favorite ? '★' : '☆';
+    footer = `<div class="card-act" style="display:flex;gap:6px">
+      <button class="pill-btn" style="padding:4px 8px;font-size:11px;flex:1" onclick="event.stopPropagation(); classifyChannel('${cid}','${nextAud}',null)">${audLbl}</button>
+      <button class="pill-btn ${item.is_favorite?'active':''}" style="padding:4px 10px;font-size:12px" onclick="event.stopPropagation(); classifyChannel('${cid}',null,${!item.is_favorite})">${favLbl}</button>
+    </div>`;
+  }
+  const onclick = isSeerr ? '' : (isCh ? `onclick="openChannel('${esc(item.channel_id || item.id)}')"` : `onclick="openItem('${esc(item.source)}','${esc(item.rating_key || item.video_id)}')"`);
+  return `
+    <div class="card ${shape} ${(isYt || isCh) ? 'src-is-yt' : ''}" ${onclick}>
+      <div class="art-box" ${isCh ? 'style="aspect-ratio:1/1"' : ''}>
+        <div class="art-fallback">${esc(item.title)}</div>
+        ${imgUrl ? `<img loading="lazy" src="${esc(imgUrl)}" onload="this.classList.add('loaded')" onerror="this.remove()">` : ''}
+        <span class="src-chip ${chipCls}">${chipTxt}</span>
+        ${dur}${prog}
+      </div>
+      <div class="card-meta">
+        <div class="card-title">${esc(item.title)}</div>
+        <div class="card-sub">${esc(item.subtitle || item.channel || '')}</div>
+      </div>
+      ${footer}
+    </div>`;
+}
+
+function renderRow(title, subtitle, items, shape = 'poster') {
+  if (!items || !items.length) return '';
+  return `
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">${esc(title)}</h2>
+        ${subtitle ? `<span class="section-sub">${esc(subtitle)}</span>` : ''}
+      </div>
+      <div class="rail">${items.map(i => renderCard(i, shape)).join('')}</div>
+    </section>`;
+}
+
+async function setTab(tab) {
+  S.tab = tab;
+  document.querySelectorAll('#mainTabs .tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  const root = document.getElementById('app');
+  if (tab === 'search') { renderSearchShell(); return; }
+  root.innerHTML = `<div class="empty">Loading ${esc(tab)}…</div>`;
+  if (tab === 'home') await renderHome();
+  else if (tab === 'movies') await renderLibrary(1, 'Movies');
+  else if (tab === 'tv') await renderLibrary(2, 'TV Shows');
+  else if (tab === 'youtube') await renderYouTube();
+  else if (tab === 'kids') await renderKids();
+}
+
+async function renderHome() {
+  const data = await api('/v1/home');
+  const root = document.getElementById('app');
+  let html = '';
+  html += renderRow('Continue Watching', 'Plex & YouTube', data.continue_watching, 'wide');
+  if (data.youtube_row && data.youtube_row.length) {
+    html += renderRow(data.youtube_signed_in ? 'YouTube Subscriptions' : 'YouTube', 'Ad-Free + SponsorBlock', data.youtube_row, 'wide');
+  } else if (!data.youtube_signed_in) {
+    html += `<section class="section"><div class="empty">Link YouTube in <strong>System</strong> (top right) to see your Subscriptions here.</div></section>`;
+  }
+  html += renderRow('Recently Added Movies', 'Your Plex Library', data.recent_movies, 'poster');
+  html += renderRow('Recently Added TV', 'Your Plex Library', data.recent_tv, 'poster');
+  root.innerHTML = html || `<div class="empty">No items found yet.</div>`;
+}
+
+async function renderLibrary(sectionId, label, append = false) {
+  if (!append) { S.gridStart = 0; S.gridItems = []; }
+  const data = await api(`/v1/plex/section/${sectionId}?start=${S.gridStart}&size=42&sort=${encodeURIComponent(S.sort)}&unwatched=${S.unwatched?1:0}`);
+  S.gridItems = append ? S.gridItems.concat(data.items || []) : (data.items || []);
+  S.gridTotal = data.total || S.gridItems.length;
+  S.gridStart = S.gridItems.length;
+
+  const root = document.getElementById('app');
+  const sorts = [['addedAt:desc','Recently Added'], ['titleSort:asc','A – Z'], ['year:desc','Newest']];
+  root.innerHTML = `
+    <div class="section-head">
+      <h2 class="section-title">${esc(label)} <span class="section-sub">(${S.gridTotal})</span></h2>
+    </div>
+    <div class="subtabs">
+      ${sorts.map(([v,t]) => `<button class="pill-btn ${S.sort===v?'active':''}" onclick="S.sort='${v}';renderLibrary(${sectionId},'${label}')">${t}</button>`).join('')}
+      <button class="pill-btn ${S.unwatched?'active':''}" onclick="S.unwatched=!S.unwatched;renderLibrary(${sectionId},'${label}')">Unwatched Only</button>
+    </div>
+    <div class="grid-poster">${S.gridItems.map(i => renderCard(i, 'poster')).join('')}</div>
+    ${S.gridItems.length < S.gridTotal ? `<div style="text-align:center;margin-top:24px"><button class="btn-secondary" onclick="renderLibrary(${sectionId},'${label}',true)">Load More (${S.gridItems.length} / ${S.gridTotal})</button></div>` : ''}`;
+}
+
+async function renderYouTube() {
+  if (S.activeChannel) {
+    await renderChannelPage(S.activeChannel);
+    return;
+  }
+  const tabs = [
+    ['channels','Adults Channels'],
+    ['kids_channels','Kids Channels'],
+    ['subscriptions','Latest (Adults)'],
+    ['home','Home Feed'],
+    ['watch_later','Watch Later'],
+    ['history','History'],
+  ];
+  const root = document.getElementById('app');
+  const nav = `<div class="subtabs">${tabs.map(([k,t]) => `<button class="pill-btn ${S.ytSubTab===k?'active':''}" onclick="S.ytSubTab='${k}';S.activeChannel=null;renderYouTube()">${t}</button>`).join('')}</div>`;
+
+  if (S.ytSubTab === 'channels' || S.ytSubTab === 'kids_channels') {
+    const aud = S.ytSubTab === 'kids_channels' ? 'kids' : 'adults';
+    const cat = aud === 'kids' ? 'all' : S.ytCategory;
+    const data = await api(`/v1/youtube/channels?audience=${aud}&category=${encodeURIComponent(cat)}&q=${encodeURIComponent(S.ytChanFilter)}`);
+    let catBar = '';
+    if (aud === 'adults' && data.categories) {
+      catBar = `<div class="subtabs" style="margin-top:-6px">${data.categories.map(c =>
+        `<button class="pill-btn ${S.ytCategory===c.id?'active':''}" onclick="S.ytCategory='${c.id}';renderYouTube()">${esc(c.label)} (${c.count})</button>`
+      ).join('')}</div>`;
+    }
+    const tools = `<div style="display:flex;gap:10px;margin:0 0 16px;flex-wrap:wrap">
+      <input class="search-input" style="max-width:340px;padding:10px 14px;font-size:14px" id="ytChSearch" placeholder="Filter ${aud} channels…" value="${esc(S.ytChanFilter)}" onkeydown="if(event.key==='Enter'){S.ytChanFilter=this.value;renderYouTube()}">
+      <button class="btn-secondary" onclick="S.ytChanFilter=document.getElementById('ytChSearch').value;renderYouTube()">Filter</button>
+      <button class="btn-primary" onclick="promptAddChannel('${aud}')">+ Add ${aud==='kids'?'Kids':'Adults'} Channel</button>
+    </div>`;
+    const items = data.items || [];
+    root.innerHTML = nav + catBar + tools + (items.length
+      ? `<div class="grid-poster">${items.map(i => renderCard(i, 'poster')).join('')}</div>`
+      : `<div class="empty">No ${aud} channels in this view.</div>`);
+    return;
+  }
+
+  const data = await api(`/v1/youtube/feed/${S.ytSubTab}?limit=24`);
+  if (data.requires_auth) {
+    root.innerHTML = nav + `<div class="empty">Sign in with your Google account in <strong>System</strong> (top right) to load ${esc(S.ytSubTab.replace('_',' '))}.<br><br><button class="btn-primary" onclick="openSettings()">Link YouTube Account</button></div>`;
+    return;
+  }
+  const items = data.items || [];
+  root.innerHTML = nav + (items.length
+    ? `<div class="grid-wide">${items.map(i => renderCard(i, 'wide')).join('')}</div>`
+    : `<div class="empty">No videos in this feed right now.</div>`);
+}
+
+async function openChannel(cid) {
+  S.activeChannel = cid;
+  await renderChannelPage(cid);
+}
+async function renderChannelPage(cid) {
+  const root = document.getElementById('app');
+  root.innerHTML = `<div class="empty">Loading channel…</div>`;
+  const data = await api(`/v1/youtube/channel/${encodeURIComponent(cid)}?limit=32`);
+  const nextAud = data.is_kids ? 'adults' : 'kids';
+  const hdr = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="S.activeChannel=null;setTab(S.tab)">← Back</button>
+      <h2 class="section-title" style="margin:0">${esc(data.title)}</h2>
+      <span class="tech-chip ${data.is_kids?'ok':''}">${data.is_kids?'Kids YouTube':esc(data.category_label||'Adults')}</span>
+      <button class="pill-btn" onclick="classifyChannel('${esc(cid)}','${nextAud}',null)">Move to ${data.is_kids?'Adults':'Kids'}</button>
+      <button class="pill-btn ${data.is_favorite?'active':''}" onclick="classifyChannel('${esc(cid)}',null,${!data.is_favorite})">${data.is_favorite?'★ Favorited':'☆ Favorite'}</button>
+    </div>`;
+  const items = data.items || [];
+  root.innerHTML = hdr + (items.length
+    ? `<div class="grid-wide">${items.map(i => renderCard(i, 'wide')).join('')}</div>`
+    : `<div class="empty">No videos found for this channel.</div>`);
+}
+async function classifyChannel(cid, audience, favorite) {
+  const body = {channel_id: cid};
+  if (audience) body.audience = audience;
+  if (favorite !== null && favorite !== undefined) body.favorite = favorite;
+  const r = await api('/v1/youtube/channels/classify', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+  });
+  if (r.ok) {
+    showToast(audience ? `Moved channel to ${audience === 'kids' ? 'Kids' : 'Adults'}` : (favorite ? 'Pinned to Favorites' : 'Removed from Favorites'));
+    if (S.activeChannel) renderChannelPage(S.activeChannel);
+    else if (S.tab === 'kids') renderKids();
+    else renderYouTube();
+  }
+}
+async function promptAddChannel(aud) {
+  const h = prompt(`Enter YouTube @handle, URL, or UC channel ID to add to ${aud === 'kids' ? 'Kids' : 'Adults'}:`);
+  if (!h || !h.trim()) return;
+  showToast('Resolving channel…');
+  const r = await api('/v1/youtube/channels/add', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url_or_handle: h.trim(), audience: aud})
+  });
+  if (r.ok) {
+    showToast(`Added ${r.title} to ${aud}`);
+    if (S.tab === 'kids') renderKids(); else renderYouTube();
+  } else {
+    showToast(r.error || 'Could not resolve channel');
+  }
+}
+
+async function renderKids() {
+  S.activeChannel = null;
+  const data = await api('/v1/kids');
+  const root = document.getElementById('app');
+  let html = '';
+  html += renderRow('Continue Watching', 'Kids', data.continue_watching, 'wide');
+  html += renderRow('Kids YouTube Channels', 'Dedicated Kids Channels · Ad-Free', data.kids_youtube_channels, 'poster');
+  html += renderRow('Recent Episodes & Channels', 'Kids TV + ytdl-sub', data.recent_kids_episodes, 'wide');
+  html += renderRow('Kids Movies', `${(data.kids_movies||[]).length} movies`, data.kids_movies, 'poster');
+  html += renderRow('Kids TV Shows', `${(data.kids_tv||[]).length} shows`, data.kids_tv, 'poster');
+  root.innerHTML = html || `<div class="empty">No Kids items found.</div>`;
+}
+
+function renderSearchShell() {
+  const root = document.getElementById('app');
+  root.innerHTML = `
+    <div class="search-wrap">
+      <input class="search-input" id="searchInput" value="${esc(S.searchQuery)}" placeholder="Search Plex library, YouTube, or request movies & shows…" autocomplete="off" autofocus>
+      <button class="search-clear ${S.searchQuery?'show':''}" id="searchClear" onclick="clearSearch()">×</button>
+    </div>
+    <div id="searchResults">${S.searchQuery ? '<div class="empty">Searching…</div>' : '<div class="empty">Start typing to search your Plex library, ad-free YouTube, and Jellyseerr downloads simultaneously.</div>'}</div>`;
+  const inp = document.getElementById('searchInput');
+  inp.addEventListener('input', () => {
+    S.searchQuery = inp.value;
+    document.getElementById('searchClear').classList.toggle('show', !!S.searchQuery.trim());
+    clearTimeout(S.searchTimer);
+    if (!S.searchQuery.trim()) {
+      document.getElementById('searchResults').innerHTML = '<div class="empty">Start typing to search your Plex library, ad-free YouTube, and Jellyseerr downloads simultaneously.</div>';
+      return;
+    }
+    S.searchTimer = setTimeout(() => runSearch(S.searchQuery.trim()), 340);
+  });
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && inp.value.trim()) { clearTimeout(S.searchTimer); runSearch(inp.value.trim()); }
+  });
+  if (S.searchQuery.trim()) runSearch(S.searchQuery.trim());
+}
+function clearSearch() {
+  S.searchQuery = '';
+  const inp = document.getElementById('searchInput');
+  if (inp) { inp.value = ''; inp.focus(); }
+  document.getElementById('searchClear')?.classList.remove('show');
+  document.getElementById('searchResults').innerHTML = '<div class="empty">Start typing to search your Plex library, ad-free YouTube, and Jellyseerr downloads simultaneously.</div>';
+}
+async function runSearch(q) {
+  const el = document.getElementById('searchResults');
+  if (!el) return;
+  el.innerHTML = `<div class="empty">Searching for "${esc(q)}"…</div>`;
+  const data = await api('/v1/search?q=' + encodeURIComponent(q) + '&limit=12');
+  if (S.searchQuery.trim() !== q) return;
+  let html = '';
+  if ((data.plex||[]).length) {
+    html += `<section class="section"><div class="section-head"><h2 class="section-title">In Your Library</h2><span class="section-sub">Plex · Instant Play</span></div><div class="grid-poster">${data.plex.map(i => renderCard(i, 'poster')).join('')}</div></section>`;
+  }
+  if ((data.youtube||[]).length) {
+    html += `<section class="section"><div class="section-head"><h2 class="section-title">YouTube</h2><span class="section-sub">Ad-Free + SponsorBlock</span></div><div class="grid-wide">${data.youtube.map(i => renderCard(i, 'wide')).join('')}</div></section>`;
+  }
+  if ((data.jellyseerr||[]).length) {
+    html += `<section class="section"><div class="section-head"><h2 class="section-title">Request to Download</h2><span class="section-sub">Jellyseerr · 720p First Profile</span></div><div class="grid-poster">${data.jellyseerr.map(i => renderCard(i, 'poster')).join('')}</div></section>`;
+  }
+  el.innerHTML = html || `<div class="empty">No results for "${esc(q)}".</div>`;
+}
+
+async function requestSeerr(type, id, btn) {
+  btn.disabled = true; btn.textContent = 'Requesting…';
+  const r = await api('/v1/jellyseerr/request', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({media_type: type, tmdb_id: id})
+  });
+  if (r.ok) {
+    btn.classList.add('done'); btn.textContent = '✓ Requested';
+    showToast('Sent to Jellyseerr — downloading with your 720p First profile');
+  } else {
+    btn.disabled = false; btn.textContent = '+ Request';
+    showToast(r.message || 'Request failed');
+  }
+}
+
+async function openItem(source, id) {
+  const bd = document.getElementById('detailBackdrop');
+  const m = document.getElementById('detailModal');
+  bd.classList.add('open');
+  m.innerHTML = `<button class="modal-close" onclick="closeDetail()">×</button><div style="padding:48px;text-align:center;color:var(--ink-2)">Loading details…</div>`;
+
+  if (source === 'youtube') {
+    const pb = await api(`/v1/playback/youtube/${encodeURIComponent(id)}?max_height=1080&container=mp4`);
+    const sb = (pb.markers || []).length;
+    const caps = (pb.caption_tracks || []).length;
+    m.innerHTML = `
+      <button class="modal-close" onclick="closeDetail()">×</button>
+      <div class="hero-banner">
+        <img src="${esc(webp('/v1/art/backdrop?src=' + encodeURIComponent('https://i.ytimg.com/vi/' + id + '/hqdefault.jpg')))}">
+        <div class="hero-grad"></div>
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-title">${esc(pb.title)}</h2>
+        <div class="tech-row">
+          <span class="tech-chip ok">Ad-Free</span>
+          <span class="tech-chip">${esc(pb.subtitle || 'YouTube')}</span>
+          ${pb.decision.height ? `<span class="tech-chip">${pb.decision.height}p</span>` : ''}
+          <span class="tech-chip">${sb} SponsorBlock skips</span>
+          <span class="tech-chip">${caps} caption tracks</span>
+        </div>
+        ${pb.stream_url ? `<video class="preview-player" controls autoplay playsinline src="${esc(pb.stream_url)}"></video>` : `<div class="empty">Stream requires stock YouTube fallback (${esc(pb.decision.error || 'DRM')}).</div>`}
+      </div>`;
+    return;
+  }
+
+  const det = await api(`/v1/plex/item/${encodeURIComponent(id)}`);
+  const isPlayable = det.type === 'movie' || det.type === 'episode';
+  const med = det.media || {};
+  const modeLabel = med.mode === 'direct_play' ? 'Direct Play' : (med.mode === 'direct_stream_audio' ? 'Audio Remux → EAC3 5.1' : (med.mode || ''));
+  let childrenHtml = '';
+  if (det.children && det.children.length) {
+    childrenHtml = `<div class="section-head" style="margin-top:16px"><h3 class="section-title" style="font-size:16px">${det.type==='show'?'Seasons':'Episodes'}</h3></div><div class="ep-list">` +
+      det.children.map(c => `
+        <div class="ep-row" onclick="openItem('plex','${esc(c.rating_key)}')">
+          <img class="ep-thumb" src="${esc(webp(c.thumb_astc || c.poster_astc))}" onerror="this.style.visibility='hidden'">
+          <div style="min-width:0;flex:1">
+            <div class="card-title" style="font-size:14px">${esc(c.title)}</div>
+            <div class="card-sub">${esc(c.subtitle || '')}</div>
+          </div>
+        </div>`).join('') + `</div>`;
+  }
+  m.innerHTML = `
+    <button class="modal-close" onclick="closeDetail()">×</button>
+    <div class="hero-banner">
+      ${det.backdrop_astc ? `<img src="${esc(webp(det.backdrop_astc))}">` : ''}
+      <div class="hero-grad"></div>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-title">${esc(det.title)}</h2>
+      <div class="tech-row">
+        ${det.subtitle ? `<span class="tech-chip">${esc(det.subtitle)}</span>` : ''}
+        ${modeLabel ? `<span class="tech-chip ok">${esc(modeLabel)}</span>` : ''}
+        ${med.height ? `<span class="tech-chip">${med.height}p ${esc((med.video_codec||'').toUpperCase())}</span>` : ''}
+        ${med.audio_codec ? `<span class="tech-chip">${esc(med.audio_codec.toUpperCase())} ${med.audio_channels}ch</span>` : ''}
+        ${(det.markers||[]).length ? `<span class="tech-chip">${det.markers.length} Skip Markers</span>` : ''}
+      </div>
+      ${det.summary ? `<p class="summary">${esc(det.summary)}</p>` : ''}
+      ${isPlayable ? `<div class="cta-row"><button class="btn-primary" onclick="previewPlex('${esc(det.rating_key)}')">▶ Preview Stream Here</button></div><div id="plexPreviewSlot"></div>` : ''}
+      ${childrenHtml}
+    </div>`;
+}
+async function previewPlex(rk) {
+  const slot = document.getElementById('plexPreviewSlot');
+  slot.innerHTML = '<div class="empty">Starting stream…</div>';
+  const pb = await api(`/v1/playback/plex/${encodeURIComponent(rk)}`);
+  slot.innerHTML = `<video class="preview-player" controls autoplay playsinline src="${esc(pb.stream_url)}"></video>`;
+}
+function closeDetail() {
+  document.getElementById('detailBackdrop').classList.remove('open');
+  document.getElementById('detailModal').innerHTML = '';
+}
+
+async function openSettings() {
+  const bd = document.getElementById('settingsBackdrop');
+  bd.classList.add('open');
+  await refreshHealth();
+  renderSettingsBody();
+}
+function closeSettings() {
+  clearInterval(S.authPollTimer);
+  document.getElementById('settingsBackdrop').classList.remove('open');
+}
+function renderSettingsBody(codeInfo = null) {
+  const h = S.health || {plex:{}, jellyseerr:{}, youtube:{}, astc:{}};
+  const m = document.getElementById('settingsModal');
+  const ytSigned = !!h.youtube.signed_in;
+  let ytSection = '';
+  if (ytSigned) {
+    ytSection = `
+      <div class="tech-row"><span class="tech-chip ok">✓ YouTube Connected</span><span class="tech-chip">SponsorBlock Active</span></div>
+      <p class="summary" style="margin-bottom:12px">Subscriptions, Home Feed, Watch Later, and History are synced privately on your local media server.</p>
+      <button class="btn-danger" onclick="logoutYt()">Sign Out of YouTube</button>`;
+  } else if (codeInfo) {
+    ytSection = `
+      <p class="summary" style="margin-bottom:4px">Open <a href="${esc(codeInfo.verification_url)}" target="_blank" style="color:#7dd3fc">${esc(codeInfo.verification_url)}</a> and enter:</p>
+      <div class="code-box">${esc(codeInfo.user_code)}</div>
+      <div class="section-sub">Waiting for approval (auto-checking every 3 seconds)…</div>`;
+  } else {
+    ytSection = `
+      <p class="summary" style="margin-bottom:12px">Sign in once with a phone code to load your Subscriptions, Watch Later, and History.</p>
+      <button class="btn-primary" onclick="startYtAuth()">Link YouTube via Phone Code</button>`;
+  }
+
+  m.innerHTML = `
+    <button class="modal-close" onclick="closeSettings()">×</button>
+    <h2 class="modal-title" style="font-size:20px;margin-bottom:16px">System & Accounts</h2>
+    <div style="margin-bottom:20px">
+      <div class="section-sub" style="margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">YouTube Account</div>
+      ${ytSection}
+    </div>
+    <div style="border-top:1px solid var(--line);padding-top:16px">
+      <div class="section-sub" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Gateway Status</div>
+      <div class="tech-row">
+        <span class="tech-chip ${h.plex.online?'ok':''}">Plex: ${h.plex.online ? 'Online ('+h.plex.latency_ms+'ms)' : 'Offline'}</span>
+        <span class="tech-chip ${h.jellyseerr.online?'ok':''}">Jellyseerr: ${h.jellyseerr.online ? 'Online' : 'Offline'}</span>
+        <span class="tech-chip">TV ASTC Cache: ${h.astc.cache_files||0} images (${h.astc.cache_mib||0} MiB)</span>
+      </div>
+    </div>`;
+}
+async function startYtAuth() {
+  const r = await api('/v1/youtube/auth/start', {method:'POST'});
+  if (r.error) { showToast(r.error); return; }
+  renderSettingsBody(r);
+  clearInterval(S.authPollTimer);
+  S.authPollTimer = setInterval(async () => {
+    const st = await api('/v1/youtube/auth/status');
+    if (st.signed_in) {
+      clearInterval(S.authPollTimer);
+      await refreshHealth();
+      renderSettingsBody();
+      showToast('YouTube connected!');
+      setTab(S.tab);
+    }
+  }, 3000);
+}
+async function logoutYt() {
+  await api('/v1/youtube/auth/logout', {method:'POST'});
+  await refreshHealth();
+  renderSettingsBody();
+  showToast('Signed out of YouTube');
+  setTab(S.tab);
+}
+async function refreshHealth() {
+  try {
+    S.health = await api('/v1/health');
+    const ok = S.health.plex.online && S.health.jellyseerr.online;
+    document.getElementById('hdrDot').classList.toggle('ok', ok);
+    document.getElementById('hdrLabel').textContent = S.health.youtube.signed_in ? 'Connected' : 'System';
+  } catch {}
+}
+
+refreshHealth();
+setTab('home');
+</script>
+</body>
+</html>

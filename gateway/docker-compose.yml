@@ -1,0 +1,38 @@
+name: cu8000-media-gateway
+
+services:
+  living-room-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cu8000-media-gateway:local
+    container_name: cu8000-media-gateway
+    ports:
+      - "${GATEWAY_BIND_IP:-0.0.0.0}:${GATEWAY_PORT:-8765}:${GATEWAY_PORT:-8765}"
+    environment:
+      TZ: "${TZ:-America/New_York}"
+      GATEWAY_HOST: "0.0.0.0"
+      GATEWAY_PORT: "${GATEWAY_PORT:-8765}"
+      PUBLIC_BASE_URL: "${PUBLIC_BASE_URL:-http://localhost:8765}"
+      PLEX_URL: "${PLEX_URL:-}"
+      PLEX_PUBLIC_URL: "${PLEX_PUBLIC_URL:-}"
+      PLEX_TOKEN: "${PLEX_TOKEN:-}"
+      PLEX_MACHINE_ID: "${PLEX_MACHINE_ID:-}"
+      JELLYSEERR_URL: "${JELLYSEERR_URL:-}"
+      JELLYSEERR_API_KEY: "${JELLYSEERR_API_KEY:-}"
+      CONFIG_DIR: "/config"
+      MEDIA_DATA_DIR: "/data"
+      MAIN_MOVIE_SECTIONS: "${MAIN_MOVIE_SECTIONS:-1}"
+      MAIN_TV_SECTIONS: "${MAIN_TV_SECTIONS:-2}"
+      KIDS_SECTION_IDS: "${KIDS_SECTION_IDS:-}"
+      SPONSORBLOCK_ENABLED: "${SPONSORBLOCK_ENABLED:-true}"
+      ASTC_MAX_CACHE_MB: "${ASTC_MAX_CACHE_MB:-1024}"
+    volumes:
+      - ./data/config:/config
+      - ./data/media:/data:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
